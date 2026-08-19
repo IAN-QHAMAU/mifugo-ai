@@ -1,0 +1,16 @@
+# Locks the Field Record palette so a viewer's dark-mode preference
+# does not fight the paper ground. The design is not theme-agnostic:
+# the manila stock and stamp red are the identity.
+[theme]
+base = "light"
+primaryColor = "#A32718"
+backgroundColor = "#E9E1D1"
+secondaryBackgroundColor = "#DFD5C1"
+textColor = "#2A251E"
+font = "sans serif"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

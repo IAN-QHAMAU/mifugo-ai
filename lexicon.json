@@ -1,0 +1,450 @@
+{
+  "version": "2026-07-30b",
+  "note": "Deterministic vernacular matching, run in Python over the raw text and unioned with Gemma's parse. Two jobs: (1) recall insurance when the model's Sheng or up-country vocabulary is weak, (2) a safety backstop so the anthrax trigger does not depend on a model boolean. NEEDS A NATIVE-SPEAKER PASS before the demo — treat the entries below as a starting skeleton, not a finished lexicon.",
+  "species_terms": {
+    "cattle": [
+      "ng'ombe",
+      "ngombe",
+      "ndama",
+      "fahali",
+      "ng'ombe wangu",
+      "mtamba"
+    ],
+    "goat": [
+      "mbuzi",
+      "beberu",
+      "mbuzi wangu"
+    ],
+    "sheep": [
+      "kondoo",
+      "kondoo wangu"
+    ],
+    "camel": [
+      "ngamia",
+      "ngamia wangu"
+    ],
+    "chicken": [
+      "kuku",
+      "chicken",
+      "chickens",
+      "hen",
+      "hens",
+      "cock",
+      "cockerel",
+      "rooster",
+      "jogoo",
+      "poultry",
+      "vifaranga",
+      "kifaranga",
+      "chick",
+      "chicks",
+      "layers",
+      "broilers",
+      "kienyeji"
+    ]
+  },
+  "symptom_terms": {
+    "salivation": [
+      "mate",
+      "inatoa mate",
+      "mate mengi",
+      "anatoa mate",
+      "kutoa mate",
+      "mate yanatiririka"
+    ],
+    "mouth_lesions": [
+      "vidonda mdomoni",
+      "vidonda kwa mdomo",
+      "vidonda kinywani",
+      "mdomo umeoza",
+      "vidonda ulimini",
+      "wana vidonda mdomoni",
+      "vidonda kwenye mdomo",
+      "malengelenge mdomoni"
+    ],
+    "foot_lesions": [
+      "vidonda miguuni",
+      "vidonda kwato",
+      "kwato zimeoza",
+      "vidonda kwenye miguu",
+      "vidonda kwenye kwato",
+      "vidonda kwatoni",
+      "malengelenge kwatoni"
+    ],
+    "lameness": [
+      "kuchechemea",
+      "inachechemea",
+      "anachechemea",
+      "haiwezi kutembea",
+      "hawezi kutembea",
+      "kilema"
+    ],
+    "not_eating": [
+      "haitaki kula",
+      "haili",
+      "imekataa kula",
+      "amekataa kula",
+      "hataki kula",
+      "hana hamu ya kula"
+    ],
+    "not_drinking": [
+      "hainywi maji",
+      "haitaki maji",
+      "hanywi maji"
+    ],
+    "weakness": [
+      "imedhoofika",
+      "amedhoofika",
+      "dhaifu",
+      "imechoka",
+      "nguvu zimeisha",
+      "hana nguvu"
+    ],
+    "weight_loss": [
+      "imekonda",
+      "amekonda",
+      "kupungua uzito",
+      "wamekonda"
+    ],
+    "pale_conjunctiva": [
+      "macho meupe",
+      "ute mweupe",
+      "macho ni meupe",
+      "ndani ya jicho ni nyeupe",
+      "kope ni nyeupe",
+      "rangi imepotea machoni",
+      "kope la chini ni jeupe",
+      "kope ni jeupe",
+      "kope limepauka",
+      "jicho la chini ni jeupe",
+      "utando ni mweupe",
+      "utando umepauka",
+      "eyelid is white",
+      "eyelid is pale",
+      "pale eyelid",
+      "white eyelid",
+      "macho yamepauka"
+    ],
+    "bottle_jaw": [
+      "taya limevimba",
+      "taya kuvimba",
+      "kimevimba chini ya taya",
+      "uvimbe chini ya kidevu",
+      "bottle jaw",
+      "taya la chini limevimba",
+      "chini ya taya kumevimba",
+      "kidevu kimevimba",
+      "swelling under the jaw",
+      "uvimbe chini ya taya"
+    ],
+    "diarrhoea": [
+      "kuharisha",
+      "kuhara",
+      "inaharisha",
+      "anaharisha",
+      "choo cha maji",
+      "wanaharisha",
+      "wanaendesha",
+      "anaendesha",
+      "wanakuha",
+      "kinyesi cha maji",
+      "loose droppings"
+    ],
+    "bloody_diarrhoea": [
+      "kuharisha damu",
+      "choo cha damu",
+      "anaharisha damu",
+      "wanaharisha damu",
+      "kinyesi na damu",
+      "kuhara damu",
+      "bloody droppings"
+    ],
+    "nasal_discharge": [
+      "makamasi",
+      "kamasi",
+      "pua inatoa maji",
+      "pua inatoka",
+      "uchafu puani",
+      "wanatoa majimaji puani",
+      "anatoa majimaji puani",
+      "majimaji puani",
+      "runny nose",
+      "discharge from nose"
+    ],
+    "ocular_discharge": [
+      "machozi",
+      "macho yanatoa maji",
+      "uchafu machoni",
+      "macho yanatiririka"
+    ],
+    "coughing": [
+      "kikohozi",
+      "inakohoa",
+      "anakohoa",
+      "kukohoa"
+    ],
+    "difficulty_breathing": [
+      "kupumua kwa shida",
+      "inashindwa kupumua",
+      "anahema",
+      "inahema sana",
+      "pumzi ni ngumu"
+    ],
+    "swollen_lymph_nodes": [
+      "tezi zimevimba",
+      "uvimbe shingoni",
+      "vivimbe shingoni",
+      "tezi kuvimba",
+      "uvimbe karibu na sikio"
+    ],
+    "fever": [
+      "homa",
+      "mwili moto",
+      "ina homa",
+      "ana homa",
+      "joto mwilini"
+    ],
+    "distended_left_flank": [
+      "tumbo limevimba",
+      "imevimba upande wa kushoto",
+      "tumbo kuvimba",
+      "ubavu wa kushoto umevimba"
+    ],
+    "rapid_bloating": [
+      "imejaa gesi",
+      "imevimba haraka",
+      "amevimba ghafla",
+      "tumbo limejaa",
+      "tumbo limevimba haraka",
+      "limevimba haraka",
+      "tumbo limejaa gesi",
+      "bloated quickly",
+      "swelled up fast"
+    ],
+    "distress": [
+      "inateseka",
+      "haitulii",
+      "inapiga kelele",
+      "ina maumivu"
+    ],
+    "recumbent": [
+      "imelala chini",
+      "haiwezi kusimama",
+      "hawezi kusimama",
+      "imeanguka",
+      "amelala hawezi kuinuka"
+    ],
+    "abortion": [
+      "imeharibu mimba",
+      "mimba imeharibika",
+      "ametupa mimba",
+      "kuharibu mimba"
+    ],
+    "skin_lesions": [
+      "vidonda mwilini",
+      "ngozi ina vidonda",
+      "upele",
+      "vidonda vyeusi",
+      "vidonda kwenye upanga",
+      "vidonda usoni",
+      "black scabs",
+      "scabs on the comb"
+    ],
+    "sudden_death": [
+      "amekufa ghafla",
+      "imekufa ghafla",
+      "kufa ghafla",
+      "wamekufa ghafla",
+      "walikufa ghafla",
+      "nimeamka nikakuta imekufa",
+      "alikufa usiku",
+      "imekufa usiku",
+      "kufa bila kuugua",
+      "amekufa bila dalili",
+      "wamekufa",
+      "wamekufa leo",
+      "wanakufa",
+      "amekufa leo",
+      "walikufa",
+      "alikufa",
+      "wamefariki",
+      "amefariki",
+      "wawili wamekufa",
+      "died this morning",
+      "died today",
+      "two died",
+      "found dead",
+      "dropped dead",
+      "amepatikana amekufa",
+      "wamepatikana wamekufa",
+      "mzoga",
+      "mizoga"
+    ],
+    "bleeding_from_orifices": [
+      "damu inatoka puani",
+      "damu puani",
+      "damu mdomoni",
+      "damu sikioni",
+      "damu haigandi",
+      "damu haiganda",
+      "damu nyeusi inatoka",
+      "inatoka damu puani na mdomoni",
+      "damu kwenye njia ya haja"
+    ],
+    "pale_comb": [
+      "upanga umepauka",
+      "kilemba kimepauka",
+      "pale comb",
+      "comb is pale",
+      "upanga mweupe",
+      "white comb",
+      "upanga ni mweupe"
+    ],
+    "cyanotic_comb": [
+      "upanga wa buluu",
+      "blue comb",
+      "purple comb",
+      "upanga wa zambarau",
+      "comb is blue",
+      "comb turned purple"
+    ],
+    "swollen_head": [
+      "kichwa kimevimba",
+      "swollen head",
+      "swollen face",
+      "uso umevimba",
+      "head is swollen"
+    ],
+    "green_white_droppings": [
+      "kinyesi cha kijani",
+      "green droppings",
+      "greenish droppings",
+      "white droppings",
+      "kinyesi cheupe",
+      "green and white droppings"
+    ],
+    "ruffled_feathers": [
+      "manyoya yamesimama",
+      "ruffled feathers",
+      "feathers standing",
+      "manyoya yamevurugika",
+      "puffed up"
+    ],
+    "twisted_neck": [
+      "shingo imepinda",
+      "twisted neck",
+      "neck twisted",
+      "wry neck",
+      "torticollis",
+      "shingo inazunguka",
+      "head twisted",
+      "shingo zimepinda",
+      "shingo zinapinda",
+      "shingo imepinda kando",
+      "necks twisted",
+      "wanazunguka kichwa"
+    ],
+    "drop_in_egg_production": [
+      "mayai yamepungua",
+      "eggs have dropped",
+      "fewer eggs",
+      "stopped laying",
+      "hawataagi",
+      "wameacha kutaga",
+      "egg production dropped"
+    ],
+    "sudden_high_mortality": [
+      "wamekufa wengi",
+      "many died",
+      "many have died",
+      "wanakufa kwa wingi",
+      "half the flock died",
+      "kuku wanakufa",
+      "birds dying fast",
+      "wamekufa ghafla",
+      "wanakufa wengi",
+      "wanakufa kila siku",
+      "wengi wanakufa",
+      "dying in numbers",
+      "many dying"
+    ],
+    "teat_lesions": [
+      "vidonda kwenye matiti",
+      "vidonda kwenye kiwele",
+      "matiti yana vidonda",
+      "teat sores",
+      "sores on the udder"
+    ]
+  },
+  "carcass_context_terms": [
+    "kuchuna mzoga",
+    "kula nyama",
+    "kumchinja",
+    "kumchuna",
+    "kuwachinja",
+    "mzoga",
+    "nimeanza kuchuna",
+    "nimeanza kumchuna",
+    "nyama ya mnyama aliyekufa",
+    "started skinning",
+    "tulikula nyama",
+    "tumechinja aliyekufa",
+    "tunataka kuchinja",
+    "tunataka kumchinja",
+    "tunataka kuwachinja",
+    "tutamchinja",
+    "tutauza nyama",
+    "we want to slaughter",
+    "we will sell the meat"
+  ],
+  "condition_hint_terms": {
+    "anthrax_suspected": [
+      "kimeta",
+      "burasta",
+      "anthrax"
+    ],
+    "east_coast_fever": [
+      "ndigana baridi",
+      "ndigana",
+      "ecf",
+      "east coast fever"
+    ],
+    "foot_and_mouth_disease": [
+      "fmd",
+      "ugonjwa wa midomo na miguu",
+      "sotoka ya miguu na midomo"
+    ],
+    "ppr": [
+      "sotoka ya mbuzi",
+      "sotoka",
+      "ppr"
+    ],
+    "haemonchosis": [
+      "minyoo",
+      "wana minyoo",
+      "haemonchus"
+    ],
+    "bloat": [
+      "gesi",
+      "bloat"
+    ],
+    "newcastle_disease": [
+      "kideri",
+      "newcastle",
+      "new castle",
+      "mdondo"
+    ],
+    "coccidiosis": [
+      "kuhara damu",
+      "coccidiosis",
+      "cocci",
+      "bloody droppings"
+    ],
+    "fowl_pox": [
+      "ndui ya kuku",
+      "fowl pox",
+      "fowlpox",
+      "chicken pox in birds"
+    ]
+  }
+}

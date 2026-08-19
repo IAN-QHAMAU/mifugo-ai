@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment — never commit this
+.venv/
+venv/
+env/
+
+# AI coding tool config — local settings, not project code
+.claude/
+.agents/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Model weights — never commit these, they are pulled at setup
+*.gguf
+*.litertlm
+*.safetensors
+models/
+
+# Local secrets
+.env
+*.local.json
+
+# Field photos — commit only images you have permission to publish
+photos/private/

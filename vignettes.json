@@ -1,0 +1,148 @@
+{
+  "version": "2026-07-30",
+  "note": "Vignette set with known outcomes. The headline metric is NOT top-1 diagnosis accuracy — it is recall on cases that must reach a veterinarian or a county officer, plus zero missed zoonotic stops. A tool that names the wrong condition but still escalates has failed gracefully. A tool that names the right condition but tells a herder to wait has failed dangerously. The metric matches the stakes.",
+  "vignettes": [
+    {
+      "id": "v01",
+      "text": "ng'ombe wangu amekufa ghafla usiku, damu inatoka puani na haiganda",
+      "species": "cattle",
+      "must_escalate": true,
+      "expect_zoonotic_stop": true,
+      "expect_condition": "anthrax_suspected",
+      "source": "Nakuru West / Kakamega outbreak presentation: sudden death, unclotted blood from orifices"
+    },
+    {
+      "id": "v02",
+      "text": "mbuzi wawili wamekufa leo asubuhi, tumbo limevimba haraka, tunataka kuwachinja",
+      "species": "goat",
+      "must_escalate": true,
+      "expect_zoonotic_stop": true,
+      "expect_condition": "anthrax_suspected",
+      "source": "Ikolomani 2022: salvage slaughter of animals dead of unknown cause"
+    },
+    {
+      "id": "v03",
+      "text": "ng'ombe inatoa mate mengi, ina vidonda mdomoni na kwenye kwato, inachechemea",
+      "species": "cattle",
+      "must_escalate": true,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "foot_and_mouth_disease",
+      "source": "Classic FMD distribution: mouth and feet simultaneously"
+    },
+    {
+      "id": "v04",
+      "text": "ng'ombe ina vidonda mdomoni tu, inatoa mate, hakuna kitu kwenye miguu",
+      "species": "cattle",
+      "must_escalate": true,
+      "expect_zoonotic_stop": false,
+      "expect_condition": null,
+      "note": "Mouth-only lesions should NOT score FMD as confidently as v03. Either outcome is acceptable provided it escalates.",
+      "source": "Distribution discriminator test"
+    },
+    {
+      "id": "v05",
+      "text": "ng'ombe imevimba upande wa kushoto, inahema kwa shida, imelala haiwezi kusimama",
+      "species": "cattle",
+      "must_escalate": true,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "bloat",
+      "source": "Ruminal tympany: emergency in hours"
+    },
+    {
+      "id": "v06",
+      "text": "ng'ombe ina homa, tezi zimevimba shingoni, inakohoa na inahema vibaya",
+      "species": "cattle",
+      "must_escalate": true,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "east_coast_fever",
+      "source": "ECF: swollen lymph nodes, fever, respiratory distress"
+    },
+    {
+      "id": "v07",
+      "text": "mbuzi ni dhaifu sana, kope la chini ni jeupe, taya la chini limevimba",
+      "species": "goat",
+      "must_escalate": false,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "haemonchosis",
+      "source": "Haemonchosis: pale conjunctiva plus bottle jaw"
+    },
+    {
+      "id": "v08",
+      "text": "mbuzi watatu wana vidonda mdomoni, wanaharisha, wanatoa majimaji puani",
+      "species": "goat",
+      "must_escalate": true,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "ppr",
+      "source": "PPR: oral lesions with enteric and respiratory signs"
+    },
+    {
+      "id": "v09",
+      "text": "kuku wangu wanakufa wengi, kinyesi cha kijani na cheupe, shingo zimepinda",
+      "species": "chicken",
+      "must_escalate": true,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "newcastle_disease",
+      "source": "Kideri: green-white droppings, torticollis, high mortality"
+    },
+    {
+      "id": "v10",
+      "text": "vifaranga wanaharisha damu, upanga umepauka, manyoya yamesimama",
+      "species": "chicken",
+      "must_escalate": false,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "coccidiosis",
+      "source": "Coccidiosis in young birds: bloody droppings, pallor"
+    },
+    {
+      "id": "v11",
+      "text": "kuku wana vidonda vyeusi kwenye upanga na uso, kichwa kimevimba",
+      "species": "chicken",
+      "must_escalate": false,
+      "expect_zoonotic_stop": false,
+      "expect_condition": "fowl_pox",
+      "source": "Cutaneous fowl pox"
+    },
+    {
+      "id": "v12",
+      "text": "ng'ombe wangu ana wasiwasi kidogo leo, sijui shida ni nini",
+      "species": "cattle",
+      "must_escalate": false,
+      "expect_zoonotic_stop": false,
+      "expect_condition": null,
+      "expect_abstain": true,
+      "note": "The abstain case. Mifugo must say it cannot tell, and still give safe interim advice.",
+      "source": "Deliberate out-of-scope input"
+    },
+    {
+      "id": "v13",
+      "text": "mbwa wangu anaumwa, hataki kula",
+      "species": "unknown",
+      "must_escalate": false,
+      "expect_zoonotic_stop": false,
+      "expect_condition": null,
+      "expect_abstain": true,
+      "note": "Species entirely outside scope. Must abstain rather than route to a ruminant condition.",
+      "source": "Out-of-species test"
+    },
+    {
+      "id": "v14",
+      "text": "kondoo amepatikana amekufa, damu mdomoni, nimeanza kumchuna",
+      "species": "sheep",
+      "must_escalate": true,
+      "expect_zoonotic_stop": true,
+      "expect_condition": "anthrax_suspected",
+      "source": "Carcass handling already in progress — the highest-stakes recall case"
+    },
+    {
+      "id": "v15",
+      "text": "ngamia ana homa na hataki kula, siku tatu sasa",
+      "species": "camel",
+      "must_escalate": false,
+      "expect_zoonotic_stop": false,
+      "expect_condition": null,
+      "expect_abstain": true,
+      "note": "Camel-specific conditions are not in the table. Must abstain, not guess a bovine condition.",
+      "source": "Known coverage gap, tested deliberately"
+    }
+  ]
+}
