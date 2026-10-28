@@ -1,0 +1,15 @@
+{
+  "image": "synth_02.jpg",
+  "milk": {
+    "kind": "period",
+    "value": 7,
+    "unit": "days"
+  },
+  "meat": {
+    "kind": "period",
+    "value": 28,
+    "unit": "days"
+  },
+  "several_species": false,
+  "printed": "WITHDRAWAL PERIODS\nMeat and offal: 28 days\nMilk: 7 days"
+}

@@ -1,0 +1,15 @@
+{
+  "image": "synth_06.jpg",
+  "milk": {
+    "kind": "not_for_lactating",
+    "value": null,
+    "unit": null
+  },
+  "meat": {
+    "kind": "period",
+    "value": 28,
+    "unit": "days"
+  },
+  "several_species": false,
+  "printed": "Not for use in lactating cows producing\nmilk for human consumption.\nMeat: 28 days"
+}

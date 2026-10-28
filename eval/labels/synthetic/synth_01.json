@@ -1,0 +1,15 @@
+{
+  "image": "synth_01.jpg",
+  "milk": {
+    "kind": "period",
+    "value": 72,
+    "unit": "hours"
+  },
+  "meat": {
+    "kind": "period",
+    "value": 14,
+    "unit": "days"
+  },
+  "several_species": false,
+  "printed": "Milk: 72 hours\nMeat: 14 days"
+}
