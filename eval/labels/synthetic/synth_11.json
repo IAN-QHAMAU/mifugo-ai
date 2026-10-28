@@ -1,0 +1,15 @@
+{
+  "image": "synth_11.jpg",
+  "milk": {
+    "kind": "zero",
+    "value": null,
+    "unit": null
+  },
+  "meat": {
+    "kind": "zero",
+    "value": null,
+    "unit": null
+  },
+  "several_species": false,
+  "printed": "Meat: 0 days\nMilk: 0 hours"
+}

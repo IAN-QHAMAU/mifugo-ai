@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="roles">
+  <a class="role" href="/coop">
+    <strong>{{ t.clerk }}</strong>
+    <span>{{ t.coop_title }}</span>
+  </a>
+</section>
+
+<section class="card">
+  <h2>{{ t.farmer }}: {{ t.farms }}</h2>
+  {% if farms %}
+  <ul class="list">
+    {% for f in farms %}
+    <li><a href="/farm/{{ f.id }}">{{ f.name }}</a> <span class="muted">{{ f.member_no }}</span></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <form method="post" action="/demo"><button class="primary">{{ t.demo }}</button></form>
+  {% endif %}
+</section>
+
+<details class="card">
+  <summary>{{ t.new_farm }}</summary>
+  <form method="post" action="/farms" class="stack">
+    <label>{{ t.name }} <input name="name" required></label>
+    <label>{{ t.phone }} <input name="phone" inputmode="tel"></label>
+    <label>{{ t.member }} <input name="member_no"></label>
+    <label>{{ t.milking }} <input name="milking" value="06:00,17:00" pattern="^([01]\d|2[0-3]):[0-5]\d(,([01]\d|2[0-3]):[0-5]\d)*$"></label>
+    <button class="primary">{{ t.create }}</button>
+  </form>
+</details>
+{% endblock %}

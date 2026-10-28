@@ -1,0 +1,15 @@
+{
+  "image": "synth_12.jpg",
+  "milk": {
+    "kind": "period",
+    "value": 120,
+    "unit": "hours"
+  },
+  "meat": {
+    "kind": "period",
+    "value": 35,
+    "unit": "days"
+  },
+  "several_species": false,
+  "printed": "Milk: 120 hours after last treatment\nMeat: 35 days"
+}

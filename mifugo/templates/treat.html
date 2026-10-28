@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="/farm/{{ farm.id }}">&larr; {{ farm.name }}</a></p>
+<h1>{{ t.log }}</h1>
+<form method="post" action="/farm/{{ farm.id }}/treat/read" enctype="multipart/form-data" class="stack card">
+  <label class="photo">
+    <strong>{{ t.photo }}</strong>
+    <input type="file" name="photo" accept="image/*" capture="environment">
+    <small class="muted">{{ t.photo_hint }}</small>
+  </label>
+  {% if not model.ok %}<p class="note">{{ t.no_model }}</p>{% endif %}
+  <label>
+    <strong>{{ t.words }}</strong>
+    <textarea name="text" rows="3" placeholder="{{ t.words_ph }}">{{ text }}</textarea>
+  </label>
+  <button class="primary">{{ t.read }}</button>
+</form>
+{% endblock %}
