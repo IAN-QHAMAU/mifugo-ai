@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% macro withdrawal_fields(prefix, w, units) %}
+<div class="row">
+  <select name="{{ prefix }}_kind">
+    <option value="period" {{ 'selected' if w.kind == 'period' }}>{{ t.kind_period }}</option>
+    <option value="zero" {{ 'selected' if w.kind == 'zero' }}>{{ t.kind_zero }}</option>
+    {% if prefix == 'milk' %}<option value="not_for_lactating" {{ 'selected' if w.kind == 'not_for_lactating' }}>{{ t.kind_nfl }}</option>{% endif %}
+    <option value="unknown" {{ 'selected' if w.kind == 'unknown' }}>{{ t.kind_unknown }}</option>
+  </select>
+  <input name="{{ prefix }}_value" value="{{ w.value }}" inputmode="decimal" placeholder="{{ t.value }}" size="5">
+  <select name="{{ prefix }}_unit">
+    {% for u in units %}<option value="{{ u }}" {{ 'selected' if w.unit == u }}>{{ t['unit_' ~ u] }}</option>{% endfor %}
+  </select>
+</div>
+<input type="hidden" name="{{ prefix }}_quote" value="{{ w.quote }}">
+{% if w.quote %}<blockquote>{{ w.quote }}</blockquote>{% endif %}
+{% endmacro %}
+
+{% block content %}
+<p><a href="/farm/{{ farm.id }}">&larr; {{ farm.name }}</a></p>
+<h1>{{ t.confirm_title }}</h1>
+{% if error %}<p class="verdict stop">{{ error }}</p>{% endif %}
+
+<form method="post" action="/farm/{{ farm.id }}/treat/confirm" class="stack">
+  {% if image_path %}
+  <section class="card">
+    <img class="label-photo" src="/uploads/{{ image_path }}" alt="">
+    <h3>{{ t.gemma_read }}</h3>
+    {% if reading.issues %}
+      <p class="note"><b>{{ t.issues }}:</b></p>
+      <ul class="small">{% for i in reading.issues %}<li>{{ i }}</li>{% endfor %}</ul>
+    {% elif reading.raw %}
+      <p class="verdict ok">{{ t.python_checked }}: {{ t.checks_ok }}</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <section class="card stack">
+    <label>{{ t.product }} <input name="product_name" value="{{ form.product_name or form.product_mention }}"></label>
+    <input type="hidden" name="ingredients" value="{{ form.ingredients }}">
+    {% if form.ingredients %}<p class="muted small">{{ form.ingredients }}</p>{% endif %}
+
+    <h3>{{ t.milk_w }}</h3>
+    {{ withdrawal_fields('milk', form.milk, ['hours', 'days', 'milkings']) }}
+    <h3>{{ t.meat_w }}</h3>
+    {{ withdrawal_fields('meat', form.meat, ['days', 'hours']) }}
+
+    <label>{{ t.confirmed_by }}
+      <input name="confirmed_by" placeholder="Agrovet / Dr ...">
+      <small class="muted">{{ t.confirmed_by_hint }}</small>
+    </label>
+  </section>
+
+  <section class="card stack">
+    <h3>{{ t.animals }}</h3>
+    {% for name in herd %}
+    <label class="check"><input type="checkbox" name="animals" value="{{ name }}" {{ 'checked' if name in form.animals }}> {{ name }}</label>
+    {% endfor %}
+    {% if unmatched %}
+      <p class="note">{{ t.not_in_herd }}: {{ unmatched | join(', ') }}</p>
+      {% for name in unmatched %}
+      <label class="check"><input type="checkbox" name="new_animals" value="{{ name }}"> {{ t.add_as_new }}: {{ name }}</label>
+      {% endfor %}
+    {% endif %}
+
+    <label>{{ t.given_at }}
+      <input type="datetime-local" name="given_at" value="{{ form.given_at }}" required>
+    </label>
+    {% if form.assumed %}<p class="note">{{ t.time_assumed }}</p>{% endif %}
+  </section>
+
+  {% if preview %}
+  <section class="card">
+    <h3>{{ t.preview }}</h3>
+    {% for p in preview %}<p class="verdict {{ p.level }}">{{ p.milk }}</p><p class="meat">{{ p.meat }}</p>{% endfor %}
+  </section>
+  {% endif %}
+
+  <input type="hidden" name="time_basis" value="{{ form.time_basis }}">
+  <input type="hidden" name="text" value="{{ text }}">
+  <input type="hidden" name="image_path" value="{{ image_path }}">
+  <input type="hidden" name="original" value="{{ original }}">
+  <input type="hidden" name="model_reply" value="{{ model_reply }}">
+  <button class="primary">{{ t.save }}</button>
+</form>
+{% endblock %}

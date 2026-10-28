@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ farm.name }} · Mifugo{% endblock %}
+{% block content %}
+<h1>{{ farm.name }}</h1>
+<p class="muted">{{ farm.member_no }} · {{ t.milking }}: {{ schedule }}</p>
+{% if demo_note %}<p class="note">{{ demo_note }}</p>{% endif %}
+
+{% for message in sms %}
+<section class="sms">
+  <h3>{{ t.sms }}</h3>
+  <p>{{ message }}</p>
+  <small class="muted">{{ t.sms_note }}</small>
+</section>
+{% endfor %}
+
+{% if answer %}
+<section class="card answer">
+  <h3>{{ t.answer }}</h3>
+  <p class="question">&ldquo;{{ answer.question }}&rdquo;</p>
+  {% for line in answer.lines %}
+  <p class="verdict {{ line.level }}">{{ line.text }}</p>
+  {% endfor %}
+</section>
+{% endif %}
+
+<form class="ask" method="post" action="/farm/{{ farm.id }}/ask">
+  <input name="text" placeholder="{{ t.ask_ph }}" required>
+  <button>{{ t.ask_btn }}</button>
+</form>
+
+<a class="primary block" href="/farm/{{ farm.id }}/treat">{{ t.log }}</a>
+
+<h2>{{ t.herd }}</h2>
+{% for b in board %}
+<article class="cow {{ b.level }}">
+  <header>
+    <strong>{{ b.animal }}</strong>
+    {% if b.hours_left is not none %}<span class="clock">{{ b.hours_left }} h</span>{% endif %}
+  </header>
+  <p class="verdict">{{ b.milk }}</p>
+  {% if b.keep_apart %}<p>{{ b.keep_apart }}</p>{% endif %}
+  <p class="meat"><b>{{ t.meat }}:</b> {{ b.meat }}</p>
+  {% if b.fix_product %}
+  <details>
+    <summary>{{ t.confirm_period }}</summary>
+    <form method="post" action="/farm/{{ farm.id }}/products/{{ b.fix_product }}/confirm" class="stack">
+      <div class="row">
+        <select name="kind">
+          <option value="period">{{ t.kind_period }}</option>
+          <option value="zero">{{ t.kind_zero }}</option>
+        </select>
+        <input name="value" inputmode="decimal" placeholder="{{ t.value }}">
+        <select name="unit">
+          <option value="days">{{ t.unit_days }}</option>
+          <option value="hours">{{ t.unit_hours }}</option>
+          <option value="milkings">{{ t.unit_milkings }}</option>
+        </select>
+      </div>
+      <input name="confirmed_by" placeholder="{{ t.confirmed_by }}" required>
+      <button>{{ t.save }}</button>
+    </form>
+  </details>
+  {% endif %}
+</article>
+{% endfor %}
+
+<details class="card">
+  <summary>{{ t.add_cow }}</summary>
+  <form method="post" action="/farm/{{ farm.id }}/animals" class="row">
+    <input name="name" placeholder="{{ t.name }}" required>
+    <button>{{ t.add }}</button>
+  </form>
+</details>
+
+{% if history %}
+<section class="card">
+  <h3>{{ t.history }}</h3>
+  <ul class="list small">
+    {% for h in history %}
+    <li><b>{{ h.animal }}</b> · {{ h.product }} · {{ h.given_at.replace('T', ' ')[:16] }}
+      {% if h.reported %}<br><span class="muted">&ldquo;{{ h.reported }}&rdquo;</span>{% endif %}
+      {% if h.source == 'manual' and h.confirmed_by %}<br><span class="muted">✓ {{ h.confirmed_by }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endblock %}

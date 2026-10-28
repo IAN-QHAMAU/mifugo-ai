@@ -31,3 +31,6 @@ models/
 
 # Field photos — commit only images you have permission to publish
 photos/private/
+
+# Local database and uploaded label photos
+data/

@@ -1,0 +1,15 @@
+{
+  "image": "synth_09.jpg",
+  "milk": {
+    "kind": "unknown",
+    "value": null,
+    "unit": null
+  },
+  "meat": {
+    "kind": "unknown",
+    "value": null,
+    "unit": null
+  },
+  "several_species": false,
+  "printed": "Store below 25\u00b0C. Protect from light."
+}

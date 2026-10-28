@@ -1,0 +1,15 @@
+{
+  "image": "synth_04.jpg",
+  "milk": {
+    "kind": "period",
+    "value": 6,
+    "unit": "milkings"
+  },
+  "meat": {
+    "kind": "period",
+    "value": 5,
+    "unit": "days"
+  },
+  "several_species": false,
+  "printed": "Milk withdrawal: 6 milkings\nSlaughter: 5 days"
+}

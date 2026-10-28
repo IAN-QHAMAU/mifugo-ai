@@ -1,0 +1,15 @@
+{
+  "image": "synth_10.jpg",
+  "milk": {
+    "kind": "period",
+    "value": 5,
+    "unit": "days"
+  },
+  "meat": {
+    "kind": "period",
+    "value": 21,
+    "unit": "days"
+  },
+  "several_species": false,
+  "printed": "Withdrawal: Milk 5 days  Meat 21 days"
+}
