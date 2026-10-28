@@ -1,8 +1,10 @@
-fastapi>=0.110
+streamlit>=1.40      # app.py, for Streamlit Community Cloud
+fastapi>=0.110       # python -m mifugo
 uvicorn>=0.29
 jinja2>=3.1
 python-multipart>=0.0.9
 pillow>=10.1
+tzdata               # time zones where the system has none
 
 # tests
 pytest>=8
