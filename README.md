@@ -40,7 +40,7 @@ This is division of labour by suitability, not distrust. No rules engine parses 
 
 Three consequences, each deliberate:
 
-1. **The model cannot silence a warning.** The anthrax trigger has two independent paths OR'd together — Gemma's extracted booleans, and a pure-Python scan of the raw text. If the model fails entirely, the keyword path still fires.
+1. **The model cannot silence a warning.** The anthrax trigger has two independent paths OR'd together - Gemma's extracted booleans, and a pure-Python scan of the raw text. If the model fails entirely, the keyword path still fires.
 2. **The model cannot author a safety instruction.** Every such string is a literal in `safety_rules.py`. Gemma is told a warning is being displayed and asked to match its urgency; it is never handed the text to rewrite.
 3. **The model cannot emit an unknown token.** Both the text parse and the vision observation are constrained to closed enums enforced during decoding.
 
@@ -56,21 +56,21 @@ MIFUGO_MOCK=1 python evaluate.py     # or without MOCK against the live model
 
 Top-1 accuracy is the wrong metric for triage. A system that names the wrong condition but escalates has failed gracefully; one that names the right condition and says "monitor at home" has failed dangerously. So the headline metrics are, in order:
 
-1. **Zoonotic recall** — of cases where a human-health stop must fire, how many fired. Target 100%; anything less is a defect.
-2. **Escalation recall** — of cases that must reach a vet or county officer, how many did.
-3. **Abstain precision** — of out-of-scope cases, how many refused to guess.
-4. Condition accuracy — reported last, on purpose.
+1. **Zoonotic recall** - of cases where a human-health stop must fire, how many fired. Target 100%; anything less is a defect.
+2. **Escalation recall** - of cases that must reach a vet or county officer, how many did.
+3. **Abstain precision** - of out-of-scope cases, how many refused to guess.
+4. Condition accuracy - reported last, on purpose.
 
 Current: **3/3 · 9/9 · 3/3 · 9/11**, one false stop (documented and retained).
 
 ## Demo script
 
-1. `ng'ombe inatoa mate, haitaki kula, ina vidonda mdomoni` — one clarifying question, then FMD with isolation and movement instructions.
-2. `kuku wangu wanakufa wengi, kinyesi cha kijani, shingo zimepinda` — Newcastle (kideri), notifiable, movement stopped, reporting explained.
-3. **Photo** — open the camera panel, choose *Lower eyelid (goat/sheep)*, upload, analyse. Overlay boxes on the membrane, band card: **Anaemic, separate, water, take to an agrovet.**
-4. **The guard** — same photo, tell it the animal is a cow. Mifugo refuses to give a band and says why. Fifteen seconds that show the system knows the limits of its own method.
-5. **The abstain case** — `ng'ombe wangu ana wasiwasi kidogo, sijui shida ni nini` — "I cannot tell from this," plus safe interim advice and what to watch for.
-6. `ng'ombe amekufa ghafla usiku, damu inatoka puani` — full-width red stop.
+1. `ng'ombe inatoa mate, haitaki kula, ina vidonda mdomoni` - one clarifying question, then FMD with isolation and movement instructions.
+2. `kuku wangu wanakufa wengi, kinyesi cha kijani, shingo zimepinda` - Newcastle (kideri), notifiable, movement stopped, reporting explained.
+3. **Photo** - open the camera panel, choose *Lower eyelid (goat/sheep)*, upload, analyse. Overlay boxes on the membrane, band card: **Anaemic, separate, water, take to an agrovet.**
+4. **The guard** - same photo, tell it the animal is a cow. Mifugo refuses to give a band and says why. Fifteen seconds that show the system knows the limits of its own method.
+5. **The abstain case** - `ng'ombe wangu ana wasiwasi kidogo, sijui shida ni nini` "I cannot tell from this," plus safe interim advice and what to watch for.
+6. `ng'ombe amekufa ghafla usiku, damu inatoka puani` - full-width red stop.
 7. **Turn off the network. Re-run step 1.** It still works.
 
 Step 7 is the Track 3 proof. Show the airplane-mode toggle on screen *before* typing.
@@ -97,9 +97,9 @@ sw_numbers.py       Swahili numeral parsing.
 
 ## Known limits
 
-Validated on Swahili and code-switched Sheng — **not** on Somali, Turkana, Borana or Maa, which are the languages of the pure pastoralist counties where livestock is the largest share of household wealth. That is the primary generalisation requirement and we do not claim it.
+Validated on Swahili and code-switched Sheng **not** on Somali, Turkana, Borana or Maa, which are the languages of the pure pastoralist counties where livestock is the largest share of household wealth. That is the primary generalisation requirement and we do not claim it.
 
-Nine conditions only; anything else abstains. Camel disease absent by design. Eyelid colour banding is validated for sheep and goats only and reports a band, not a score — published field data shows 9.7 to 21.4% false positives among trained human scorers. The FAMACHA chart is copyrighted and is not reproduced here. The condition table is hand-written from published guidance and has not been validated against field outcomes.
+Nine conditions only; anything else abstains. Camel disease absent by design. Eyelid colour banding is validated for sheep and goats only and reports a band, not a score published field data shows 9.7 to 21.4% false positives among trained human scorers. The FAMACHA chart is copyrighted and is not reproduced here. The condition table is hand-written from published guidance and has not been validated against field outcomes.
 
 ## Environment
 
