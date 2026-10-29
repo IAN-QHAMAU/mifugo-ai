@@ -90,6 +90,23 @@ python -m mifugo                # http://127.0.0.1:8000
 ```
 
 Open it on a phone on the same Wi-Fi with `MIFUGO_HOST=0.0.0.0 python -m mifugo`.
+
+There is also a Streamlit front end over the same engine, which is what the
+hosted demo runs:
+
+```bash
+streamlit run app.py
+```
+
+**Streamlit Community Cloud** (the public demo): main file `app.py`, branch
+`main`. To let Gemma read labels there, add this to the app's *Secrets*:
+
+```toml
+MIFUGO_GEMMA_API_KEY = "your Google AI Studio key"
+```
+
+Without a key, the hosted app runs in manual-entry mode. It loads the demo
+farms on first start, and its data resets whenever Streamlit restarts the app.
 On the home page, **Load demo farms** creates three farms with treatments in
 every state. Demo product names and periods are illustrative, and the app says so.
 
@@ -111,7 +128,7 @@ The safety logic is identical with either backend.
 ## Evidence, honestly
 
 ```bash
-pytest                                              # 104 tests
+pytest                                              # 108 tests
 MIFUGO_BACKEND=none python -m eval.run_log_eval     # message reading, word lists only
 python -m eval.run_log_eval                         # the same with Gemma
 python -m eval.run_label_eval eval/labels/real      # the test that matters (photos needed)
@@ -120,7 +137,7 @@ python -m eval.make_synthetic_labels                # regenerate the synthetic s
 
 | What | Result | What it does and does not show |
 |---|---|---|
-| Unit and web tests | 104 pass | The engine, the evidence rule, time parsing and both user flows behave as specified. Includes: a correct reading of every synthetic label is accepted, and swapped or wrong-species numbers are refused. |
+| Unit and web tests | 108 pass | The engine, the evidence rule, time parsing and both user flows behave as specified. Includes: a correct reading of every synthetic label is accepted, and swapped or wrong-species numbers are refused. |
 | Message reading, no model | 0 early times; 30/30 intent, cows and time | **A regression check, not evidence.** The 30 messages were written by the team while building the word lists. Real farmers' messages will be messier. |
 | Message reading, with Gemma | not yet run | Ollama was not reachable from the environment this rebuild was written in. Run it on a laptop. |
 | Label reading, real photos | not yet run | `eval/labels/real/` is empty. Filling it is the first job; see its README. **DANGEROUS must be 0.** |
@@ -150,7 +167,9 @@ mifugo/messages.py       Every safety sentence, as literals, in Swahili and Engl
 mifugo/llm.py            The only file that talks to a model (Ollama, Gemma API, none).
 mifugo/clock.py          Nairobi time, milking schedules, Swahili clock ("saa 11 jioni").
 mifugo/store.py          SQLite.
+mifugo/views.py          What both front ends show: cards, answers, save rules, co-op checks.
 mifugo/web.py            FastAPI app: farmer and co-op clerk views.
+app.py                   Streamlit app over the same views, for Streamlit Community Cloud.
 mifugo/demo.py           Demo farms (illustrative data).
 eval/                    Message and label evaluations; synthetic label generator.
 tests/                   pytest.
