@@ -1,0 +1,67 @@
+{
+  "note": "MOCK_MODE=1 makes the whole pipeline run with zero model calls. The Python routing, safety and herd logic still executes for real — only the three language jobs are pre-baked. Use this if Ollama dies during the pitch.",
+  "elicit_by_field": {
+    "species": "Ni mnyama wa aina gani \u2014 ng'ombe, mbuzi, kondoo au ngamia?",
+    "animals_affected": "Ni wanyama wangapi wana dalili hizi kwa sasa?",
+    "duration_days": "Dalili hizi zilianza siku ngapi zilizopita?",
+    "herd_size": "Una wanyama wangapi kwa jumla katika kundi lako?"
+  },
+  "default": {
+    "id": "unrecognised",
+    "match_any": [],
+    "parse": {
+      "species": "unknown",
+      "symptoms": [],
+      "duration_days": null,
+      "animals_affected": null,
+      "herd_size": null,
+      "sudden_death": false,
+      "bleeding_from_orifices": false
+    },
+    "explain_sw": "Samahani, dalili ulizoeleza hazilingani na magonjwa sita ambayo Mifugo inashughulikia, na haitakisii. Mtenge mnyama huyu na wengine kwa tahadhari. Tafadhali wasiliana na daktari wa mifugo au ofisa wa mifugo wa kaunti yako."
+  },
+  "scenarios": [
+    {
+      "id": "fmd_cattle",
+      "match_any": ["vidonda mdomoni", "inatoa mate", "mate"],
+      "parse": {
+        "species": "cattle",
+        "symptoms": ["salivation", "mouth_lesions", "not_eating"],
+        "duration_days": 2,
+        "animals_affected": 1,
+        "herd_size": null,
+        "sudden_death": false,
+        "bleeding_from_orifices": false
+      },
+      "explain_sw": "Dalili unazoeleza \u2014 mate mengi, vidonda mdomoni na kukataa kula \u2014 zinaelekea kwenye ugonjwa wa midomo na miguu. Ugonjwa huu huenea kwa kasi sana kati ya wanyama. Mtenge ng'ombe huyu mbali na wengine sasa hivi, na usimpeleke kwenye malisho au maji ya pamoja. Ripoti kwa ofisa wa mifugo wa kaunti ndani ya saa 24. Ugonjwa huu hauambukizi binadamu."
+    },
+    {
+      "id": "anthrax_sudden_death",
+      "match_any": ["wamekufa ghafla", "imekufa ghafla", "damu puani", "damu haigandi", "kimeta"],
+      "parse": {
+        "species": "cattle",
+        "symptoms": ["sudden_death", "bleeding_from_orifices"],
+        "duration_days": 1,
+        "animals_affected": 2,
+        "herd_size": 14,
+        "sudden_death": true,
+        "bleeding_from_orifices": true
+      },
+      "explain_sw": "Ng'ombe wako wawili wamekufa ghafla na damu inayotoka bila kuganda. Hii ni hali ya hatari kubwa kwa binadamu, si kwa wanyama pekee. Usiguse, usifungue wala usichinje mzoga huu, na usiruhusu mtu mwingine kuufanyia kazi. Uzike shimo refu mahali ulipo. Mjulishe ofisa wa mifugo wa kaunti mara moja, leo."
+    },
+    {
+      "id": "haemonchosis_goats",
+      "match_any": ["macho meupe", "taya limevimba", "wamedhoofika", "minyoo"],
+      "parse": {
+        "species": "goat",
+        "symptoms": ["pale_conjunctiva", "bottle_jaw", "weakness"],
+        "duration_days": 8,
+        "animals_affected": 3,
+        "herd_size": 20,
+        "sudden_death": false,
+        "bleeding_from_orifices": false
+      },
+      "explain_sw": "Macho meupe na taya lililovimba ni dalili za upungufu wa damu unaosababishwa na minyoo. Ugonjwa huu hauambukizwi moja kwa moja kutoka mbuzi mmoja hadi mwingine, lakini minyoo iko kwenye malisho, kwa hivyo kundi lote liko hatarini. Kagua macho ya mbuzi wengine wote. Wape dawa ya minyoo wale walioathirika, na ubadilishe eneo la malisho. Mwone daktari wa mifugo au agrovet katika siku chache zijazo."
+    }
+  ]
+}

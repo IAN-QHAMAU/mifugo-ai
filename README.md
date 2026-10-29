@@ -1,178 +1,111 @@
 # Mifugo
 
-**Can I sell this cow's milk today?**
+**Offline livestock triage for Kenyan smallholders.** Describe a sick animal in Swahili or Sheng, or photograph the part you are worried about, and get a condition, an isolation instruction, a herd judgement, and an escalation threshold — with no internet connection.
 
-A Kenyan dairy farmer treats a cow for mastitis. The withdrawal period, how
-long her milk must stay out of the can, is printed on the box in small
-English type. Two days later someone else does the milking, the treated cow's
-milk goes into the shared can, and the co-op's residue test rejects all of it.
-Or nobody tests it, and the residues reach the people who drink it.
-
-Mifugo closes that gap. Photograph the medicine box, say in Swahili or Sheng
-which cow and when ("nimemdunga Njeri sindano jana jioni"), and Mifugo tells
-the farmer exactly which milking her milk can be sold from. At the collection
-point, the co-op clerk sees which deliveries carry that risk and tests those
-cans first, instead of guessing.
-
-> This branch is a rebuild. Version 1 was a general livestock-triage app. Why
-> it was replaced is in [docs/RETRO.md](docs/RETRO.md).
+Gemma 4 E4B, served locally. Nine conditions across cattle, goats, sheep and poultry.
 
 ---
 
-## Why this problem
-
-| Finding | Source |
-|---|---|
-| 63% of small-scale dairy farmers studied did not observe withdrawal periods; milk from Kenyan smallholders has shown residues above the maximum limits | [Springer, 2026](https://link.springer.com/article/10.1186/s42269-026-01393-z) |
-| In one Kenyan study area, 5,182.75 litres of milk a month were rejected for antibiotic residues before farmers were trained | [ScienceDirect, 2024](https://www.sciencedirect.com/science/article/pii/S2352771424001691) |
-| Of antibiotics dispensed without a prescription in one study, 42.7% were dispensed by agrovet attendants | [Frontiers in Veterinary Science, 2025](https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2025.1707434/full) |
-
-What is **not** yet known, and must be tested before anyone builds a company on
-this: whether farmers will log treatments honestly when logging costs them
-milk sales, and whether co-ops will pay for targeted testing. See
-[docs/WRITEUP.md](docs/WRITEUP.md#what-we-have-not-proven).
-
-## How it works
-
-```
-photo of the box ──► Gemma reads the label ──► Python checks the evidence ─┐
-                                                                           ├─► withdrawal engine ──► "USIUZE maziwa ya Njeri.
-"Njeri, sindano, jana jioni" ──► Gemma reads the words ─┐                  │    (pure Python)         Yanaweza kuuzwa kuanzia
-                       Swahili word lists read them too ┴─► latest time ───┘                          ukamuaji wa Jumamosi..."
-```
-
-**Gemma reads. Python guarantees.**
-
-| Job | Who | File |
-|---|---|---|
-| Read the withdrawal statements off a photo of the packaging | Gemma (vision) | `mifugo/label_reader.py` |
-| Check that the printed words actually support the number read | Python | `mifugo/label_reader.py` |
-| Understand a Swahili / Sheng / English message: intent, cows, time | Gemma | `mifugo/log_parser.py` |
-| Read cow names and time phrases directly, as a backstop | Python | `mifugo/log_parser.py`, `mifugo/timewords.py` |
-| Turn "jana jioni" into a timestamp | Python | `mifugo/timewords.py` |
-| Compute the first saleable milking, per cow, across all treatments | Python | `mifugo/withdrawal.py` |
-| Every sentence that tells someone to sell or not sell | Python literals | `mifugo/messages.py` |
-
-Gemma is what makes the product possible: without it, the farmer has to find
-and type a period from small print, which is exactly the step that fails
-today. Python is what makes it safe to rely on.
-
-### The rules that keep it safe
-
-1. **The evidence rule.** Gemma must copy the exact printed words of each
-   withdrawal statement. Python accepts a period only if the number is the
-   first number printed after the word *milk* (or *meat*), the unit is printed
-   with it, the value is plausible, and, where several species are listed, the
-   number comes from the cattle line. A model that swaps the milk and meat
-   numbers, or reports the sheep period, is refused.
-2. **Never a default.** If the period was not read, or the label says *not for
-   lactating animals*, the verdict is DO NOT SELL with no end date until a
-   person enters a period and says who confirmed it.
-3. **Latest plausible time.** "Jana jioni" means 20:59 yesterday, not 16:00.
-   No time at all means now. When Gemma and the word lists disagree, the later
-   time wins. Every guess can only push the end date later.
-4. **Real milkings.** A period in hours or days ends at the first scheduled
-   milking at or after it. A period printed in *milkings* is counted in the
-   farm's own milkings.
-5. **Last dose, worst case.** Each dose is its own treatment; a cow's status is
-   the latest end across all of them, and one unconfirmed treatment blocks sale.
-
-Mifugo never recommends a medicine or a dose. It only reads what was already given.
-
----
-
-## Run it
+## Quickstart
 
 ```bash
 pip install -r requirements.txt
-ollama pull gemma4:e4b          # Gemma on this machine; no internet needed after this
-python -m mifugo                # http://127.0.0.1:8000
-```
-
-Open it on a phone on the same Wi-Fi with `MIFUGO_HOST=0.0.0.0 python -m mifugo`.
-
-There is also a Streamlit front end over the same engine, which is what the
-hosted demo runs:
-
-```bash
+ollama pull gemma4:e4b        # E2B also works, faster, slightly weaker vision
 streamlit run app.py
 ```
 
-**Streamlit Community Cloud** (the public demo): main file `app.py`, branch
-`main`. To let Gemma read labels there, add this to the app's *Secrets*:
-
-```toml
-MIFUGO_GEMMA_API_KEY = "your Google AI Studio key"
-```
-
-Without a key, the hosted app runs in manual-entry mode. It loads the demo
-farms on first start, and its data resets whenever Streamlit restarts the app.
-On the home page, **Load demo farms** creates three farms with treatments in
-every state. Demo product names and periods are illustrative, and the app says so.
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `MIFUGO_BACKEND` | `ollama` | `ollama` (offline), `gemma_api` (hosted Gemma), `none` (no model: the farmer types the period) |
-| `MIFUGO_MODEL` | `gemma4:e4b` | Ollama model tag |
-| `MIFUGO_OLLAMA_URL` | `http://127.0.0.1:11434` | Ollama endpoint |
-| `MIFUGO_GEMMA_API_KEY` | | Google AI Studio key, for `gemma_api` |
-| `MIFUGO_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Hosted Gemma model id; check the current id in AI Studio |
-| `MIFUGO_DB` | `data/mifugo.db` | SQLite file |
-| `MIFUGO_UPLOADS` | `data/uploads` | Where label photos are kept |
-
-For a public live demo, run with `MIFUGO_BACKEND=gemma_api` on any small host.
-The safety logic is identical with either backend.
-
----
-
-## Evidence, honestly
+No model available? Everything is exercisable without one:
 
 ```bash
-pytest                                              # 108 tests
-MIFUGO_BACKEND=none python -m eval.run_log_eval     # message reading, word lists only
-python -m eval.run_log_eval                         # the same with Gemma
-python -m eval.run_label_eval eval/labels/real      # the test that matters (photos needed)
-python -m eval.make_synthetic_labels                # regenerate the synthetic smoke-test labels
+MIFUGO_MOCK=1 streamlit run app.py
 ```
 
-| What | Result | What it does and does not show |
+## The architecture rule
+
+**Gemma understands language and images. Python owns every threshold, rule and verdict.**
+
+This is division of labour by suitability, not distrust. No rules engine parses code-switched Sheng; no language model should decide whether a carcass is safe to open.
+
+| Job | Owner | File |
 |---|---|---|
-| Unit and web tests | 108 pass | The engine, the evidence rule, time parsing and both user flows behave as specified. Includes: a correct reading of every synthetic label is accepted, and swapped or wrong-species numbers are refused. |
-| Message reading, no model | 0 early times; 30/30 intent, cows and time | **A regression check, not evidence.** The 30 messages were written by the team while building the word lists. Real farmers' messages will be messier. |
-| Message reading, with Gemma | not yet run | Ollama was not reachable from the environment this rebuild was written in. Run it on a laptop. |
-| Label reading, real photos | not yet run | `eval/labels/real/` is empty. Filling it is the first job; see its README. **DANGEROUS must be 0.** |
-| Label reading, synthetic | refused 10, correct 2, dangerous 0 with no model | Smoke test only. Flat rendered text is much easier than a creased box. |
+| Messy Swahili/Sheng to structured facts | Gemma | `gemma.py` |
+| One follow-up question when facts are missing | Gemma | `gemma.py` |
+| Describing what is visible in a photograph | Gemma | `vision.py` |
+| Rewording a finished verdict in warm Swahili | Gemma | `gemma.py` |
+| Vernacular keyword backstop | Python | `lexicon.py` |
+| Symptoms + lesion sites to candidate condition | Python | `router.py` |
+| Colour description to anaemia band | Python | `vision_rules.py` |
+| Isolation, movement, slaughter, reporting rules | Python | `safety_rules.py` |
+| The zoonotic danger stop | Python, verbatim | `safety_rules.py` |
 
-## What is simulated or missing
+Three consequences, each deliberate:
 
-- **SMS is a preview.** The message a farmer would receive is shown, not sent.
-  Sending needs an SMS gateway account (for example Africa's Talking).
-- **No accounts.** Anyone with the link can see every farm. Fine for a demo,
-  not for real farm data.
-- **Offline means the laptop or a co-op field box,** not the farmer's phone.
-  Running Gemma on the phone itself would need an Android build.
-- **The Swahili sentences were written by a non-native speaker.** They are all
-  in `mifugo/messages.py`, to be reviewed by Swahili speakers who keep cows.
-- **Not validated with farmers, agrovets or a co-op.** See
-  [docs/WRITEUP.md](docs/WRITEUP.md#what-we-have-not-proven).
+1. **The model cannot silence a warning.** The anthrax trigger has two independent paths OR'd together — Gemma's extracted booleans, and a pure-Python scan of the raw text. If the model fails entirely, the keyword path still fires.
+2. **The model cannot author a safety instruction.** Every such string is a literal in `safety_rules.py`. Gemma is told a warning is being displayed and asked to match its urgency; it is never handed the text to rewrite.
+3. **The model cannot emit an unknown token.** Both the text parse and the vision observation are constrained to closed enums enforced during decoding.
+
+## No drug names, on purpose
+
+No advice string in this repository names a drug, a drug class, or a dose. Antimicrobial and anthelmintic misuse in Kenyan livestock keeping is a real problem, and milk and meat withdrawal periods cannot be reasoned about without knowing what the animal was already given. Output is restricted to action classes: isolate, separate, water, bed, do not move, do not slaughter, report, transport, seek help.
+
+## Evaluation
+
+```bash
+MIFUGO_MOCK=1 python evaluate.py     # or without MOCK against the live model
+```
+
+Top-1 accuracy is the wrong metric for triage. A system that names the wrong condition but escalates has failed gracefully; one that names the right condition and says "monitor at home" has failed dangerously. So the headline metrics are, in order:
+
+1. **Zoonotic recall** — of cases where a human-health stop must fire, how many fired. Target 100%; anything less is a defect.
+2. **Escalation recall** — of cases that must reach a vet or county officer, how many did.
+3. **Abstain precision** — of out-of-scope cases, how many refused to guess.
+4. Condition accuracy — reported last, on purpose.
+
+Current: **3/3 · 9/9 · 3/3 · 9/11**, one false stop (documented and retained).
+
+## Demo script
+
+1. `ng'ombe inatoa mate, haitaki kula, ina vidonda mdomoni` — one clarifying question, then FMD with isolation and movement instructions.
+2. `kuku wangu wanakufa wengi, kinyesi cha kijani, shingo zimepinda` — Newcastle (kideri), notifiable, movement stopped, reporting explained.
+3. **Photo** — open the camera panel, choose *Lower eyelid (goat/sheep)*, upload, analyse. Overlay boxes on the membrane, band card: **Anaemic, separate, water, take to an agrovet.**
+4. **The guard** — same photo, tell it the animal is a cow. Mifugo refuses to give a band and says why. Fifteen seconds that show the system knows the limits of its own method.
+5. **The abstain case** — `ng'ombe wangu ana wasiwasi kidogo, sijui shida ni nini` — "I cannot tell from this," plus safe interim advice and what to watch for.
+6. `ng'ombe amekufa ghafla usiku, damu inatoka puani` — full-width red stop.
+7. **Turn off the network. Re-run step 1.** It still works.
+
+Step 7 is the Track 3 proof. Show the airplane-mode toggle on screen *before* typing.
 
 ## Files
 
 ```
-mifugo/withdrawal.py     DETERMINISTIC. Treatments -> first saleable milking; co-op check.
-mifugo/timewords.py      DETERMINISTIC. Swahili/Sheng/English time phrases -> latest plausible time.
-mifugo/label_reader.py   Gemma vision job + the evidence rule.
-mifugo/log_parser.py     Gemma language job + name/intent/time backstops.
-mifugo/messages.py       Every safety sentence, as literals, in Swahili and English.
-mifugo/llm.py            The only file that talks to a model (Ollama, Gemma API, none).
-mifugo/clock.py          Nairobi time, milking schedules, Swahili clock ("saa 11 jioni").
-mifugo/store.py          SQLite.
-mifugo/views.py          What both front ends show: cards, answers, save rules, co-op checks.
-mifugo/web.py            FastAPI app: farmer and co-op clerk views.
-app.py                   Streamlit app over the same views, for Streamlit Community Cloud.
-mifugo/demo.py           Demo farms (illustrative data).
-eval/                    Message and label evaluations; synthetic label generator.
-tests/                   pytest.
-docs/RETRO.md            Why version 1 did not win, and what changed.
-docs/WRITEUP.md          Draft hackathon writeup, demo script, and open questions.
+app.py              Streamlit UI. Renders; decides nothing.
+ui_vision.py        Camera panel, annotated overlay, band card.
+triage.py           Orchestration. Parse, elicit, route, safety, explain.
+gemma.py            The only file that talks to the model. Three language jobs.
+vision.py           Gemma job D: image to constrained observations.
+vision_schema.py    Closed observation vocabulary + JSON schema.
+vision_rules.py     DETERMINISTIC. Observation to symptoms; colour to band.
+router.py           DETERMINISTIC. Symptoms + lesion sites to condition.
+safety_rules.py     DETERMINISTIC. Every safety literal lives here.
+lexicon.py/.json    Vernacular keyword backstop. The model-failure safety net.
+schema.py           Canonical symptom vocabulary and parse schema.
+conditions.json     Nine conditions. Hand-written, sourced, no drug names.
+vignettes.json      15 cases with known outcomes.
+evaluate.py         Recall-first evaluation harness.
+sw_numbers.py       Swahili numeral parsing.
 ```
+
+## Known limits
+
+Validated on Swahili and code-switched Sheng — **not** on Somali, Turkana, Borana or Maa, which are the languages of the pure pastoralist counties where livestock is the largest share of household wealth. That is the primary generalisation requirement and we do not claim it.
+
+Nine conditions only; anything else abstains. Camel disease absent by design. Eyelid colour banding is validated for sheep and goats only and reports a band, not a score — published field data shows 9.7 to 21.4% false positives among trained human scorers. The FAMACHA chart is copyrighted and is not reproduced here. The condition table is hand-written from published guidance and has not been validated against field outcomes.
+
+## Environment
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `MIFUGO_MOCK` | `0` | `1` runs the whole app with no model |
+| `MIFUGO_MODEL` | `gemma4:e4b` | Ollama model tag |
+| `MIFUGO_OLLAMA_URL` | `http://127.0.0.1:11434` | Ollama endpoint |
+| `MIFUGO_NUM_CTX` | `8192` | Context window (Ollama defaults far lower) |
