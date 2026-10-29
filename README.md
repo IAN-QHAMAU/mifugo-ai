@@ -1,6 +1,6 @@
 # Mifugo
 
-**Offline livestock triage for Kenyan smallholders.** Describe a sick animal in Swahili or Sheng, or photograph the part you are worried about, and get a condition, an isolation instruction, a herd judgement, and an escalation threshold — with no internet connection.
+**Offline livestock triage for Kenyan smallholders.** Describe a sick animal in Swahili or Sheng, or photograph the part you are worried about, and get a condition, an isolation instruction, a herd judgement, and an escalation threshold with no internet connection.
 
 Gemma 4 E4B, served locally. Nine conditions across cattle, goats, sheep and poultry.
 
